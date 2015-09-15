@@ -1,0 +1,37 @@
+package nl.hanze.web.t41.http;
+
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class HTTPListener {
+	private int port;
+	
+	private HTTPHandler hh;
+	
+	public HTTPListener(int port, HTTPHandler hh) throws Exception {
+		if (port < HTTPSettings.PORT_MIN || port > HTTPSettings.PORT_MAX) 
+			throw new Exception("Invalid TCP/IP port, out of range");
+		this.port=port;
+		this.hh=hh;
+	}
+	
+	public void startUp() throws Exception {
+		ServerSocket servsock=new ServerSocket(port);
+		
+		while (true) {
+			Socket s=servsock.accept();
+			hh.handleRequest(s.getInputStream(), s.getOutputStream());
+			s.close();
+		}
+	}
+	
+	public static void main (String args[]) {
+	    try {
+	    	HTTPListener listener = new HTTPListener (HTTPSettings.PORT_NUM, new HTTPHandlerImpl());
+	    	listener.startUp();	    	
+	    } catch (Exception e) {
+			e.printStackTrace();
+		}
+	     
+	}
+}

@@ -1,0 +1,32 @@
+package nl.hanze.web.t41.http;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+
+public class HTTPHandlerImpl implements HTTPHandler {
+
+	public void handleRequest(InputStream in, OutputStream out) {
+		setDataTypes();
+		HTTPRequest request = new HTTPRequest(in);
+		HTTPRespons respons = new HTTPRespons(out);	
+		
+		request.setUri();						
+		respons.setRequest(request);
+		
+		try {
+			respons.sendResponse();			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void setDataTypes() {
+		HTTPSettings.dataTypes.put("html", "text/html");
+		HTTPSettings.dataTypes.put("htm",  "text/html");
+		HTTPSettings.dataTypes.put("css",  "text/css");
+		HTTPSettings.dataTypes.put("js",   "text/js");
+		HTTPSettings.dataTypes.put("gif",  "image/gif");
+		HTTPSettings.dataTypes.put("jpeg", "image/jpeg");
+		HTTPSettings.dataTypes.put("jpg",  "image/jpeg");		
+	}
+}
